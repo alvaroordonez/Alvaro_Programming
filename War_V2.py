@@ -1,4 +1,5 @@
 #Testing - adding this comment from my local main in git kraken
+#Testing number 2: With Fergyl
 class Card():
 
     def __init__(self, suit, rank):

@@ -275,5 +275,6 @@ if __name__=="__main__":
         player.all_cards = []
         dealer.all_cards = []
         round += 1
+        #This project originated in Jupyter and therefore the clear_output() command was used
         #clear_output()
         print('\n' * 100)

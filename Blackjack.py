@@ -276,5 +276,6 @@ if __name__=="__main__":
         dealer.all_cards = []
         round += 1
         #This project originated in Jupyter and therefore the clear_output() command was used
+        #This will be a seperate commit on the Blackjack branch
         #clear_output()
         print('\n' * 100)

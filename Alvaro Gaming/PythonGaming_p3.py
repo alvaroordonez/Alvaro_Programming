@@ -19,17 +19,18 @@ FPS = 60
 FramePerSec = pygame.time.Clock()
 
 # Setting up other variables that will be used in program
-SCREEN_WIDTH = 400
+SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SPEED = 5
-SCORE = 0
+SCORE_1 = 0
+SCORE_2 = 0
 
 # Setting up Fonts
 font = pygame.font.SysFont("Verdana", 60)
 font_small = pygame.font.SysFont("Verdana", 20)
 game_over = font.render("Game_Over", True, BLACK)
 
-background = pygame.image.load("AnimatedStreet.png")
+background = pygame.image.load("space.png")
 
 # Create white screen
 DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -42,7 +43,7 @@ class Enemy(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load("Enemy.png")
         self.rect = self.image.get_rect()
-        # self.rect.center = (random.randint(40, SCREEN_WIDTH-40), 0)
+        #self.rect.center = (random.randint(40, SCREEN_WIDTH-40), 0)
 
         self.velocity = [random.randint(4, 8), random.randint(-8, 8)]
 
@@ -63,7 +64,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def bounce(self):
         self.velocity[0] = -self.velocity[0]
-        self.velocity[1] = randint(-8, 8)
+        self.velocity[1] = random.randint(-8, 8)
 
     # This line of code is now shorten and done using sprite groups
     # def draw(self, surface):
@@ -108,7 +109,7 @@ class Player_2(pygame.sprite.Sprite):
 
 
 st_cord_1 = (35, 520)
-st_cord_2 = (365, 100)
+st_cord_2 = (765, 100)
 
 # Setting up Sprites
 P1 = Player_1(st_cord_1)
@@ -139,8 +140,11 @@ while True:
             sys.exit()
 
     DISPLAYSURF.blit(background, (0, 0))
-    scores = font_small.render(str(SCORE), True, BLACK)
-    DISPLAYSURF.blit(scores, (10, 10))
+    pygame.draw.line(background, WHITE, [380, 0], [380, 600], 5)
+    score_1 = font_small.render(str(SCORE_1), True, RED)
+    score_2 = font_small.render(str(SCORE_2), True, RED)
+    DISPLAYSURF.blit(score_1, (10, 10))
+    DISPLAYSURF.blit(score_2, (780, 10))
 
     # Moves and Re-draws all Sprites
     for entity in all_sprites:
@@ -148,28 +152,37 @@ while True:
         entity.move()
 
     #Check if the ball is bouncing against any of the 4 walls:
-    if E1.rect.x>=390:
+    if E1.rect.x>=750:
         E1.velocity[0] = -E1.velocity[0]
     if E1.rect.x<=0:
         E1.velocity[0] = -E1.velocity[0]
-    if E1.rect.y>390:
+    if E1.rect.y>510:
         E1.velocity[1] = -E1.velocity[1]
     if E1.rect.y<0:
         E1.velocity[1] = -E1.velocity[1]
     # To be run if collision occurs between Player and Enemy
     if pygame.sprite.spritecollideany(P1, enemies):
         pygame.mixer.Sound("crash.wav").play()
-        time.sleep(0.25)
+        #time.sleep(0.25)
 
-        DISPLAYSURF.fill(RED)
-        DISPLAYSURF.blit(game_over, (30, 250))
+        #DISPLAYSURF.fill(RED)
+        #DISPLAYSURF.blit(game_over, (215, 250))
 
-        pygame.display.update()
-        for entity in all_sprites:
-            entity.kill()
-        time.sleep(2)
-        pygame.quit()
-        sys.exit()
+        #pygame.display.update()
+        #for entity in all_sprites:
+            #entity.kill()
+        #time.sleep(2)
+        #pygame.quit()
+        #sys.exit()
+
+        E1.bounce()
+        SCORE_1 += 1
+
+    if pygame.sprite.spritecollideany(P2, enemies):
+        pygame.mixer.Sound("crash.wav").play()
+
+        E1.bounce()
+        SCORE_2 += 1
 
     pygame.display.update()
     FramePerSec.tick(FPS)

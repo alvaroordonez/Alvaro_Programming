@@ -14,7 +14,6 @@ RED = (255, 0, 0)  # Red
 BLUE = (0, 0, 255)  # Blue
 GREEN = (0, 255, 0)  # Green
 
-
 # assigning FPS Value
 FPS = 60
 FramePerSec = pygame.time.Clock()
@@ -25,9 +24,9 @@ SCREEN_HEIGHT = 600
 SPEED = 5
 SCORE = 0
 
-#Setting up Fonts
-font = pygame.font.SysFont("Verdana",60)
-font_small = pygame.font.SysFont("Verdana",20)
+# Setting up Fonts
+font = pygame.font.SysFont("Verdana", 60)
+font_small = pygame.font.SysFont("Verdana", 20)
 game_over = font.render("Game_Over", True, BLACK)
 
 background = pygame.image.load("AnimatedStreet.png")
@@ -37,28 +36,42 @@ DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 DISPLAYSURF.fill(WHITE)
 pygame.display.set_caption("Alvy Game: Pong")
 
+
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load("Enemy.png")
         self.rect = self.image.get_rect()
-        self.rect.center = (random.randint(40, SCREEN_WIDTH-40), 0)
+        # self.rect.center = (random.randint(40, SCREEN_WIDTH-40), 0)
 
+        self.velocity = [random.randint(4, 8), random.randint(-8, 8)]
+
+    """""
     def move(self):
-        self.rect.move_ip(0,10)
+        self.rect.move_ip(0, 10)
         if self.rect.bottom > 600:
             global SCORE
             SCORE += 1
             self.rect.top = 0
             self.rect.center = (random.randint(30, 370), 0)
+            
+    """
 
-    #This line of code is now shorten and done using sprite groups
-    #def draw(self, surface):
-        #surface.blit(self.image, self.rect)
+    def move(self):
+        self.rect.x += self.velocity[0]
+        self.rect.y += self.velocity[1]
+
+    def bounce(self):
+        self.velocity[0] = -self.velocity[0]
+        self.velocity[1] = randint(-8, 8)
+
+    # This line of code is now shorten and done using sprite groups
+    # def draw(self, surface):
+    # surface.blit(self.image, self.rect)
 
 
 class Player_1(pygame.sprite.Sprite):
-    def __init__(self,coord):
+    def __init__(self, coord):
         super().__init__()
         self.image = pygame.image.load("Player.png")
         self.rect = self.image.get_rect()
@@ -70,6 +83,7 @@ class Player_1(pygame.sprite.Sprite):
             self.rect.move_ip(0, -5)
         if pressed_keys[K_DOWN] and self.rect.bottom < 600:
             self.rect.move_ip(0, 5)
+
 
 class Player_2(pygame.sprite.Sprite):
     def __init__(self, coord):
@@ -85,15 +99,16 @@ class Player_2(pygame.sprite.Sprite):
         if pressed_keys[K_s] and self.rect.bottom < 600:
             self.rect.move_ip(0, 5)
 
-        #if self.rect.left > 0:
-            #if pressed_keys[K_LEFT]:
-                #self.rect.move_ip(-5, 0)
-        #if self.rect.right < SCREEN_WIDTH:
-            #if pressed_keys[K_RIGHT]:
-                #self.rect.move_ip(5, 0)
+        # if self.rect.left > 0:
+        # if pressed_keys[K_LEFT]:
+        # self.rect.move_ip(-5, 0)
+        # if self.rect.right < SCREEN_WIDTH:
+        # if pressed_keys[K_RIGHT]:
+        # self.rect.move_ip(5, 0)
 
-st_cord_1 = (35,520)
-st_cord_2 = (365,100)
+
+st_cord_1 = (35, 520)
+st_cord_2 = (365, 100)
 
 # Setting up Sprites
 P1 = Player_1(st_cord_1)
@@ -132,6 +147,15 @@ while True:
         DISPLAYSURF.blit(entity.image, entity.rect)
         entity.move()
 
+    #Check if the ball is bouncing against any of the 4 walls:
+    if E1.rect.x>=390:
+        E1.velocity[0] = -E1.velocity[0]
+    if E1.rect.x<=0:
+        E1.velocity[0] = -E1.velocity[0]
+    if E1.rect.y>390:
+        E1.velocity[1] = -E1.velocity[1]
+    if E1.rect.y<0:
+        E1.velocity[1] = -E1.velocity[1]
     # To be run if collision occurs between Player and Enemy
     if pygame.sprite.spritecollideany(P1, enemies):
         pygame.mixer.Sound("crash.wav").play()

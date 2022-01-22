@@ -57,18 +57,32 @@ class Enemy(pygame.sprite.Sprite):
         #surface.blit(self.image, self.rect)
 
 
-class Player(pygame.sprite.Sprite):
-    def __init__(self):
+class Player_1(pygame.sprite.Sprite):
+    def __init__(self,coord):
         super().__init__()
         self.image = pygame.image.load("Player.png")
         self.rect = self.image.get_rect()
-        self.rect.center = (35, 520)
+        self.rect.center = coord
 
     def move(self):
         pressed_keys = pygame.key.get_pressed()
-        if pressed_keys[K_UP]:
+        if pressed_keys[K_UP] and self.rect.top > 0:
             self.rect.move_ip(0, -5)
-        if pressed_keys[K_DOWN]:
+        if pressed_keys[K_DOWN] and self.rect.bottom < 600:
+            self.rect.move_ip(0, 5)
+
+class Player_2(pygame.sprite.Sprite):
+    def __init__(self, coord):
+        super().__init__()
+        self.image = pygame.image.load("Player.png")
+        self.rect = self.image.get_rect()
+        self.rect.center = coord
+
+    def move(self):
+        pressed_keys = pygame.key.get_pressed()
+        if pressed_keys[K_w] and self.rect.top > 0:
+            self.rect.move_ip(0, -5)
+        if pressed_keys[K_s] and self.rect.bottom < 600:
             self.rect.move_ip(0, 5)
 
         #if self.rect.left > 0:
@@ -78,8 +92,12 @@ class Player(pygame.sprite.Sprite):
             #if pressed_keys[K_RIGHT]:
                 #self.rect.move_ip(5, 0)
 
+st_cord_1 = (35,520)
+st_cord_2 = (365,100)
+
 # Setting up Sprites
-P1 = Player()
+P1 = Player_1(st_cord_1)
+P2 = Player_2(st_cord_2)
 E1 = Enemy()
 
 # Creating Sprites Groups
@@ -87,6 +105,7 @@ enemies = pygame.sprite.Group()
 enemies.add(E1)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(P1)
+all_sprites.add(P2)
 all_sprites.add(E1)
 
 # Adding a new User event
@@ -116,7 +135,7 @@ while True:
     # To be run if collision occurs between Player and Enemy
     if pygame.sprite.spritecollideany(P1, enemies):
         pygame.mixer.Sound("crash.wav").play()
-        time.sleep(0.5)
+        time.sleep(0.25)
 
         DISPLAYSURF.fill(RED)
         DISPLAYSURF.blit(game_over, (30, 250))

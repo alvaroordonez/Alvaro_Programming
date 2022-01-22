@@ -35,7 +35,7 @@ background = pygame.image.load("AnimatedStreet.png")
 # Create white screen
 DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 DISPLAYSURF.fill(WHITE)
-pygame.display.set_caption("Alvy Game")
+pygame.display.set_caption("Alvy Game: Pong")
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
@@ -62,7 +62,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load("Player.png")
         self.rect = self.image.get_rect()
-        self.rect.center = (160, 520)
+        self.rect.center = (35, 520)
 
     def move(self):
         pressed_keys = pygame.key.get_pressed()
@@ -71,12 +71,12 @@ class Player(pygame.sprite.Sprite):
         if pressed_keys[K_DOWN]:
             self.rect.move_ip(0, 5)
 
-        if self.rect.left > 0:
-            if pressed_keys[K_LEFT]:
-                self.rect.move_ip(-5, 0)
-        if self.rect.right < SCREEN_WIDTH:
-            if pressed_keys[K_RIGHT]:
-                self.rect.move_ip(5, 0)
+        #if self.rect.left > 0:
+            #if pressed_keys[K_LEFT]:
+                #self.rect.move_ip(-5, 0)
+        #if self.rect.right < SCREEN_WIDTH:
+            #if pressed_keys[K_RIGHT]:
+                #self.rect.move_ip(5, 0)
 
 # Setting up Sprites
 P1 = Player()

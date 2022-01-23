@@ -1,3 +1,9 @@
+"""
+The following game is utilizing pygame imports to create what I'd like to call Cong
+Cong is nothing more than Pong but with cars, listen closely and you will hear a mini
+heart attack from your insurance company everytime the player car hits the ball car
+"""
+
 # Imports
 import pygame, sys
 from pygame.locals import *
@@ -21,6 +27,8 @@ FramePerSec = pygame.time.Clock()
 # Setting up other variables that will be used in program
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+BALL_BOUNDX = 750
+BALL_BOUNDY = 510
 SPEED = 5
 SCORE_1 = 0
 SCORE_2 = 0
@@ -35,7 +43,7 @@ background = pygame.image.load("space.png")
 # Create white screen
 DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 DISPLAYSURF.fill(WHITE)
-pygame.display.set_caption("Alvy Game: Pong")
+pygame.display.set_caption("Alvy Game: Cong")
 
 
 class Ball(pygame.sprite.Sprite):
@@ -52,11 +60,11 @@ class Ball(pygame.sprite.Sprite):
         self.rect.y += self.velocity[1]
 
         # Check if the ball is bouncing against any of the 4 walls:
-        if self.rect.x >= 750:
+        if self.rect.x >= BALL_BOUNDX:
             self.velocity[0] = -self.velocity[0]
         if self.rect.x <= 0:
             self.velocity[0] = -self.velocity[0]
-        if self.rect.y > 510:
+        if self.rect.y > BALL_BOUNDY:
             self.velocity[1] = -self.velocity[1]
         if self.rect.y < 0:
             self.velocity[1] = -self.velocity[1]
@@ -94,12 +102,13 @@ class Player_2(pygame.sprite.Sprite):
         if pressed_keys[K_s] and self.rect.bottom < SCREEN_HEIGHT:
             self.rect.move_ip(0, 5)
 
-start_coord_1 = (35, 520)
-start_coord_2 = (765, 100)
+# Setting up the starting coordinates for both Car 1 and Car 2
+START_COORD_1 = (35, 520)
+START_COORD_2 = (765, 100)
 
 # Setting up Sprites
-P1 = Player_1(start_coord_1)
-P2 = Player_2(start_coord_2)
+P1 = Player_1(START_COORD_1)
+P2 = Player_2(START_COORD_2)
 E1 = Ball()
 
 # Creating Sprites Groups

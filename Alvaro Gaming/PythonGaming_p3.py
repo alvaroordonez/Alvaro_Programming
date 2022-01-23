@@ -38,7 +38,7 @@ DISPLAYSURF.fill(WHITE)
 pygame.display.set_caption("Alvy Game: Pong")
 
 
-class Enemy(pygame.sprite.Sprite):
+class Ball(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load("Enemy.png")
@@ -47,29 +47,23 @@ class Enemy(pygame.sprite.Sprite):
 
         self.velocity = [random.randint(4, 8), random.randint(-8, 8)]
 
-    """""
-    def move(self):
-        self.rect.move_ip(0, 10)
-        if self.rect.bottom > 600:
-            global SCORE
-            SCORE += 1
-            self.rect.top = 0
-            self.rect.center = (random.randint(30, 370), 0)
-            
-    """
-
     def move(self):
         self.rect.x += self.velocity[0]
         self.rect.y += self.velocity[1]
 
+        # Check if the ball is bouncing against any of the 4 walls:
+        if self.rect.x >= 750:
+            self.velocity[0] = -self.velocity[0]
+        if self.rect.x <= 0:
+            self.velocity[0] = -self.velocity[0]
+        if self.rect.y > 510:
+            self.velocity[1] = -self.velocity[1]
+        if self.rect.y < 0:
+            self.velocity[1] = -self.velocity[1]
+
     def bounce(self):
         self.velocity[0] = -self.velocity[0]
         self.velocity[1] = random.randint(-8, 8)
-
-    # This line of code is now shorten and done using sprite groups
-    # def draw(self, surface):
-    # surface.blit(self.image, self.rect)
-
 
 class Player_1(pygame.sprite.Sprite):
     def __init__(self, coord):
@@ -82,7 +76,7 @@ class Player_1(pygame.sprite.Sprite):
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[K_UP] and self.rect.top > 0:
             self.rect.move_ip(0, -5)
-        if pressed_keys[K_DOWN] and self.rect.bottom < 600:
+        if pressed_keys[K_DOWN] and self.rect.bottom < SCREEN_HEIGHT:
             self.rect.move_ip(0, 5)
 
 
@@ -97,24 +91,16 @@ class Player_2(pygame.sprite.Sprite):
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[K_w] and self.rect.top > 0:
             self.rect.move_ip(0, -5)
-        if pressed_keys[K_s] and self.rect.bottom < 600:
+        if pressed_keys[K_s] and self.rect.bottom < SCREEN_HEIGHT:
             self.rect.move_ip(0, 5)
 
-        # if self.rect.left > 0:
-        # if pressed_keys[K_LEFT]:
-        # self.rect.move_ip(-5, 0)
-        # if self.rect.right < SCREEN_WIDTH:
-        # if pressed_keys[K_RIGHT]:
-        # self.rect.move_ip(5, 0)
-
-
-st_cord_1 = (35, 520)
-st_cord_2 = (765, 100)
+start_coord_1 = (35, 520)
+start_coord_2 = (765, 100)
 
 # Setting up Sprites
-P1 = Player_1(st_cord_1)
-P2 = Player_2(st_cord_2)
-E1 = Enemy()
+P1 = Player_1(start_coord_1)
+P2 = Player_2(start_coord_2)
+E1 = Ball()
 
 # Creating Sprites Groups
 enemies = pygame.sprite.Group()
@@ -144,43 +130,21 @@ while True:
     score_1 = font_small.render(str(SCORE_1), True, RED)
     score_2 = font_small.render(str(SCORE_2), True, RED)
     DISPLAYSURF.blit(score_1, (10, 10))
-    DISPLAYSURF.blit(score_2, (780, 10))
+    DISPLAYSURF.blit(score_2, (770, 10))
 
     # Moves and Re-draws all Sprites
     for entity in all_sprites:
         DISPLAYSURF.blit(entity.image, entity.rect)
         entity.move()
 
-    #Check if the ball is bouncing against any of the 4 walls:
-    if E1.rect.x>=750:
-        E1.velocity[0] = -E1.velocity[0]
-    if E1.rect.x<=0:
-        E1.velocity[0] = -E1.velocity[0]
-    if E1.rect.y>510:
-        E1.velocity[1] = -E1.velocity[1]
-    if E1.rect.y<0:
-        E1.velocity[1] = -E1.velocity[1]
-    # To be run if collision occurs between Player and Enemy
+    # To be run if collision occurs between Player and Ball
     if pygame.sprite.spritecollideany(P1, enemies):
         pygame.mixer.Sound("crash.wav").play()
-        #time.sleep(0.25)
-
-        #DISPLAYSURF.fill(RED)
-        #DISPLAYSURF.blit(game_over, (215, 250))
-
-        #pygame.display.update()
-        #for entity in all_sprites:
-            #entity.kill()
-        #time.sleep(2)
-        #pygame.quit()
-        #sys.exit()
-
         E1.bounce()
         SCORE_1 += 1
 
     if pygame.sprite.spritecollideany(P2, enemies):
         pygame.mixer.Sound("crash.wav").play()
-
         E1.bounce()
         SCORE_2 += 1
 
